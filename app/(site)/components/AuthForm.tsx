@@ -1,7 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
-import Input from "../../components/input/input";
+import Input from "../../components/inputs/input";
 import Button from "@/app/components/Button";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
