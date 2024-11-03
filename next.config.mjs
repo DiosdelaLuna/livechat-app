@@ -1,7 +1,4 @@
 /** @type {import('next').NextConfig} */
-<<<<<<< Updated upstream
-const nextConfig = {};
-=======
 const nextConfig = {
   experimental: {
     appDir: true,
@@ -15,6 +12,5 @@ const nextConfig = {
     ],
   },
 };
->>>>>>> Stashed changes
 
 export default nextConfig;
