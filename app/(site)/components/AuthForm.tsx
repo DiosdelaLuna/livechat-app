@@ -1,7 +1,7 @@
 "use client";
 import { useState, useCallback, useEffect } from "react";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
-import Input from "@/app/components/inputs/input";
+import Input from "../../components/inputs/input";
 import Button from "@/app/components/Button";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
@@ -13,19 +13,24 @@ import { useRouter } from "next/navigation";
 type Variant = "LOGIN" | "REGISTER";
 
 function AuthForm() {
+  const session = useSession();
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (session?.status == "authenticated") {
       router.push("/users");
     }
-  }, [status, router]);
+  }, [session?.status, router]);
 
   const toggleVariant = useCallback(() => {
-    setVariant((prev) => (prev === "LOGIN" ? "REGISTER" : "LOGIN"));
-  }, []);
+    if (variant === "LOGIN") {
+      setVariant("REGISTER");
+    } else {
+      setVariant("LOGIN");
+    }
+  }, [variant]);
 
   const {
     register,
@@ -56,7 +61,8 @@ function AuthForm() {
         .then((callback) => {
           if (callback?.error) {
             toast.error("Invalid credentials");
-          } else {
+          }
+          if (callback?.ok) {
             toast.success("Logged In!");
             router.push("/users");
           }
@@ -67,19 +73,18 @@ function AuthForm() {
 
   const socialAction = (action: string) => {
     setIsLoading(true);
+
     signIn(action, { redirect: false })
       .then((callback) => {
         if (callback?.error) {
           toast.error("Invalid Credentials");
-        } else {
+        }
+        if (callback?.ok && !callback?.error) {
           toast.success("Logged in!");
-          router.push("/users");
         }
       })
       .finally(() => setIsLoading(false));
   };
-
-  if (status === "loading") return null;
 
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -96,7 +101,7 @@ function AuthForm() {
           )}
           <Input
             id="email"
-            label="Email address"
+            label="Email address "
             type="email"
             register={register}
             errors={errors}
@@ -104,7 +109,7 @@ function AuthForm() {
           />
           <Input
             id="password"
-            label="Password"
+            label="Password "
             type="password"
             register={register}
             errors={errors}

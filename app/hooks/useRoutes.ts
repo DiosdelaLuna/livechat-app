@@ -16,23 +16,29 @@ const useRoutes = () => {
         label: "Chat",
         href: "/conversations",
         icon: HiChat,
-        active: pathname == "/conversations" || !!conversationId,
+        active: pathname === "/conversations" || !!conversationId,
       },
       {
         label: "Users",
         href: "/users",
         icon: HiUsers,
-        active: pathname == "/users",
+        active: pathname === "/users",
       },
       {
         label: "Logout",
         href: "#",
-        onClick: () => signOut(),
+        onClick: () => {
+          signOut({
+            redirect: true,
+            callbackUrl: "/",
+          });
+        },
         icon: HiArrowLeftOnRectangle,
       },
     ],
     [pathname, conversationId]
   );
+
   return routes;
 };
 
