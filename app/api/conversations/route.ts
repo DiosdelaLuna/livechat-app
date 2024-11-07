@@ -1,10 +1,12 @@
-import getCurrentUser from "@/app/actions/getCurrentUser";
+
+// app/api/conversations/route.ts
+import { getCurrentUser } from "@/app/actions/getCurrentUser";  // Changed this line
 import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 
 export async function POST(request: Request) {
   try {
-    const currentUser = await getCurrentUser();
+    const currentUser = await getCurrentUser();  // Remove .default
     console.log("Current User:", currentUser);
 
     if (!currentUser?.id || !currentUser?.email) {
@@ -41,7 +43,6 @@ export async function POST(request: Request) {
         },
         include: { users: true },
       });
-      console.log("New Group Conversation Created:", newConversation);
       return NextResponse.json(newConversation);
     }
 
@@ -53,11 +54,9 @@ export async function POST(request: Request) {
         ],
       },
     });
-    console.log("Existing Conversations:", existingConversations);
 
     const singleConversation = existingConversations[0];
     if (singleConversation) {
-      console.log("Returning Existing Conversation:", singleConversation);
       return NextResponse.json(singleConversation);
     }
 
@@ -70,7 +69,6 @@ export async function POST(request: Request) {
       },
       include: { users: true },
     });
-    console.log("New Single Conversation Created:", newConversation);
     return NextResponse.json(newConversation);
   } catch (error: any) {
     console.error(

@@ -3,6 +3,7 @@
 import Avatar from "@/app/components/Avatar";
 import { User } from "@prisma/client";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 interface UserBoxProps {
@@ -10,28 +11,34 @@ interface UserBoxProps {
 }
 
 const UserBox: React.FC<UserBoxProps> = ({ data }) => {
-  const [conversationId, setConversationId] = useState<string | null>(null);
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = useCallback(async () => {
+  const handleClick = useCallback(() => {
     setIsLoading(true);
 
-    try {
-      const response = await axios.post("/api/conversations", {
+    axios
+      .post("/api/conversations", {
         userId: data.id,
+      })
+      .then((response) => {
+        router.push(`/conversations/${response.data.id}`);
+      })
+      .catch((error) => {
+        console.error(
+          "Error creating conversation:",
+          error.response?.data || error.message
+        );
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-      setConversationId(response.data.id);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [data.id]);
+  }, [data.id, router]);
 
   return (
     <div
       onClick={handleClick}
-      className="
+      className={`
         w-full
         relative
         flex
@@ -43,7 +50,8 @@ const UserBox: React.FC<UserBoxProps> = ({ data }) => {
         rounded-lg
         transition
         cursor-pointer
-      "
+        ${isLoading ? "opacity-50" : ""}
+      `}
     >
       <Avatar user={data} />
       <div className="min-w-0 flex-1">
@@ -53,11 +61,6 @@ const UserBox: React.FC<UserBoxProps> = ({ data }) => {
           </div>
         </div>
       </div>
-      {conversationId && (
-        <a href={`/conversations/${conversationId}`} className="hidden">
-          Go to Conversation
-        </a>
-      )}
     </div>
   );
 };
