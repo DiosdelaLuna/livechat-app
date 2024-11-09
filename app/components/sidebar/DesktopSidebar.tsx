@@ -1,18 +1,20 @@
 "use client";
+
 import { User } from "@prisma/client";
 import { useState } from "react";
 import useRoutes from "@/app/hooks/useRoutes";
 import DesktopItem from "./DesktopItem";
 import Avatar from "../Avatar";
+import { usePathname } from "next/navigation"; // Добавляем импорт
 
 interface DesktopSidebarProps {
   currentUser: User | null;
 }
 
 const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser }) => {
+  const pathname = usePathname(); // Получаем текущий путь
   const routes = useRoutes();
   const [isOpen, setIsOpen] = useState(false);
-  console.log({ currentUser });
 
   return (
     <div
@@ -41,7 +43,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser }) => {
               href={item.href}
               label={item.label}
               icon={item.icon}
-              active={item.active}
+              active={pathname === item.href} // Проверяем текущий путь
               onClick={item.onClick}
             />
           ))}

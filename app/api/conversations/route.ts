@@ -1,12 +1,10 @@
-
-// app/api/conversations/route.ts
-import { getCurrentUser } from "@/app/actions/getCurrentUser";  // Changed this line
+import { getCurrentUser } from "@/app/actions/getCurrentUser";
 import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 
 export async function POST(request: Request) {
   try {
-    const currentUser = await getCurrentUser();  // Remove .default
+    const currentUser = await getCurrentUser();
     console.log("Current User:", currentUser);
 
     if (!currentUser?.id || !currentUser?.email) {

@@ -3,12 +3,13 @@
 import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
 interface MessageInputProps {
-  placeholder: string;
+  placeholder?: string;
   id: string;
-  type: string;
+  type?: string;
   required?: boolean;
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors;
+  disabled?: boolean;
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({
@@ -18,6 +19,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   required,
   register,
   errors,
+  disabled,
 }) => {
   return (
     <div className="relative w-full">
@@ -27,16 +29,17 @@ const MessageInput: React.FC<MessageInputProps> = ({
         autoComplete={id}
         {...register(id, { required })}
         placeholder={placeholder}
+        disabled={disabled}
         className="
-                text-black
-                font-light
-                py-2
-                px-4
-                bg-neutral-100
-                w-full
-                rounded-full
-                focus:outline-none
-            "
+          text-black
+          font-light
+          py-2
+          px-4
+          bg-neutral-100 
+          w-full 
+          rounded-full
+          focus:outline-none
+        "
       />
     </div>
   );

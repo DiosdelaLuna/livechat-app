@@ -13,20 +13,20 @@ export async function POST(request: Request) {
     }
 
     const newMessage = await prisma.message.create({
+      data: {
+        body: message,
+        image: image,
+        conversationId: conversationId,
+        senderId: currentUser.id,
+        seenIds: [currentUser.id],
+      },
       include: {
         seen: true,
         sender: true,
       },
-      data: {
-        body: message,
-        image: image,
-        senderId: currentUser.id,
-        seenIds: [currentUser.id],
-        conversationId: conversationId,
-      },
     });
 
-    await prisma.conversation.update({
+    const updatedConversation = await prisma.conversation.update({
       where: {
         id: conversationId,
       },
@@ -36,19 +36,11 @@ export async function POST(request: Request) {
           push: newMessage.id,
         },
       },
-      include: {
-        users: true,
-        messages: {
-          include: {
-            seen: true,
-          },
-        },
-      },
     });
 
     return NextResponse.json(newMessage);
   } catch (error) {
-    console.log(error, "ERROR_MESSAGES");
+    console.log("ERROR_MESSAGES", error);
     return new NextResponse("InternalError", { status: 500 });
   }
 }
